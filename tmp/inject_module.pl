@@ -22,6 +22,11 @@ sub main {
 
     system("ssh darkpan-vagrant sudo orepan.pl --destination=/opt/orepan --pause=MMCLERIC /tmp/$file");
     system("ssh darkpan-vagrant sudo orepan_index.pl --repository=/opt/orepan");
+
+    system("ssh darkpan-vagrant sudo /opt/cpan-api/bin/metacpan release --cpan /opt/orepan /opt/orepan/authors/id/");
+    system("ssh darkpan-vagrant 'cd /opt/cpan-api && sudo bin/metacpan latest --cpan /opt/orepan'");
+    # authors indexing is broken
+    #system("ssh darkpan-vagrant sudo /opt/cpan-api/bin/metacpan author --cpan /opt/orepan");
 }
 
 main(@ARGV) unless caller;
