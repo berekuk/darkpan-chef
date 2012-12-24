@@ -13,6 +13,7 @@ Vagrant::Config.run do |config|
   # Production and dev http ports.
   config.vm.forward_port 9200, 9200
   config.vm.forward_port 5000, 5000
+  config.vm.forward_port 5001, 5001
 
   # Enable and configure the chef solo provisioner
   config.vm.provision :chef_solo do |chef|

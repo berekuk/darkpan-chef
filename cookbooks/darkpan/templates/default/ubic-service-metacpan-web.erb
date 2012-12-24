@@ -1,0 +1,17 @@
+# vim: ft=perl
+use strict;
+use warnings;
+
+use Ubic::Service::Plack;
+
+Ubic::Service::Plack->new({
+    server => 'Starman',
+    server_args => {
+        port => 5001,
+    },
+    cwd => "/opt/metacpan-web",
+    app => "app.psgi",
+    stdout => "/opt/log/metacpan-web.log",
+    stderr => "/opt/log/metacpan-web.err.log",
+    ubic_log => "/opt/log/metacpan-web.ubic.log",
+});

@@ -21,17 +21,15 @@ dpkg_package "elasticsearch" do
     action :install
 end
 
+directory '/opt/log'
+
 # darkpan
 package 'make'
 package 'unzip'
 cpan_module 'OrePAN'
 directory '/opt/orepan'
 
-# debugging - inject Ubic to orepan
-execute "inject-ubic" do
-  command "orepan.pl --destination=/opt/orepan --pause=MMCLERIC /vagrant/tmp/Ubic-1.48.tar.gz && orepan_index.pl --repository=/opt/orepan"
-end
-
+# cpan-api
 git "/opt/cpan-api" do
   repository "https://github.com/CPAN-API/cpan-api.git"
   reference "master"
@@ -48,10 +46,30 @@ template "/opt/cpan-api/metacpan_server_local.conf" do
   group "root"
   mode 0644
 end
-
 include_recipe 'ubic'
 cpan_module 'Ubic::Service::Plack'
 cpan_module 'Starman'
 ubic_service 'cpan-api' do
+  action [:install, :start]
+end
+
+# metacpan-web
+git "/opt/metacpan-web" do
+  repository "https://github.com/CPAN-API/metacpan-web.git"
+  reference "master"
+  action :sync
+end
+package 'libxml2-dev'
+execute "metacpan-web-deps" do
+  cwd "/opt/metacpan-web"
+  command "cpanm --notest --installdeps ."
+end
+template "/opt/metacpan-web/metacpan_web_local.conf" do
+  source "metacpan_web_local.conf.erb"
+  owner "root"
+  group "root"
+  mode 0644
+end
+ubic_service 'metacpan-web' do
   action [:install, :start]
 end
