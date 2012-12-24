@@ -35,16 +35,17 @@ git "/opt/cpan-api" do
   reference "master"
   action :sync
 end
-package 'libexpat1-dev'
-execute "cpan-api-deps" do
-  cwd "/opt/cpan-api"
-  command "cpanm --notest --installdeps ."
-end
 template "/opt/cpan-api/metacpan_server_local.conf" do
   source "metacpan_server_local.conf.erb"
   owner "root"
   group "root"
   mode 0644
+end
+package 'libexpat1-dev'
+execute "cpan-api-deps" do
+  cwd "/opt/cpan-api"
+  command "cpanm --notest --installdeps . && bin/metacpan mapping --delete && touch /opt/cpan-api.installed"
+  creates "/opt/cpan-api.installed"
 end
 include_recipe 'ubic'
 cpan_module 'Ubic::Service::Plack'
