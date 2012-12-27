@@ -19,6 +19,9 @@ Vagrant::Config.run do |config|
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = 'cookbooks'
     chef.add_recipe 'darkpan'
+    chef.json = {
+      :server => 'localhost'
+    }
   end
 
 end

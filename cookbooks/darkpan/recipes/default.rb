@@ -11,14 +11,22 @@ package 'git'
 package 'screen'
 
 # elasticsearch
-package 'openjdk-7-jre'
+package 'openjdk-6-jre'
+remote_file "/tmp/elasticsearch.deb" do
+  source "http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.1.deb"
+  mode 0644
+end
 dpkg_package "elasticsearch" do
-    case node[:platform]
-    when "debian","ubuntu"
-            package_name "elasticsearch"
-            source "/vagrant/deb/elasticsearch-0.20.1.deb"
-    end
-    action :install
+  source "/tmp/elasticsearch.deb"
+  action :install
+end
+service "elasticsearch" do
+    action :nothing
+end
+file "/etc/default/elasticsearch" do
+    mode 0644
+    content "JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64\n"
+    notifies :restart, "service[elasticsearch]"
 end
 
 directory '/opt/log'
@@ -73,4 +81,19 @@ template "/opt/metacpan-web/metacpan_web_local.conf" do
 end
 ubic_service 'metacpan-web' do
   action [:install, :start]
+end
+
+# nginx
+package 'nginx'
+service 'nginx'
+template "/etc/nginx/sites-enabled/darkpan" do
+  source "nginx.conf.erb"
+  owner "root"
+  group "root"
+  mode 0644
+  variables({
+    :port => 80,
+    :server => node.server
+  })
+  notifies :restart, "service[nginx]"
 end

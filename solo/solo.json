@@ -1,3 +1,4 @@
 {
-    "run_list": [ "recipe[darkpan::default]" ]
+    "run_list": [ "recipe[darkpan::default]" ],
+    // "server": "your.server.domain.name"
 }
