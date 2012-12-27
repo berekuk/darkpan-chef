@@ -4,6 +4,7 @@ execute "apt-get-update" do
 end
 
 include_recipe "perl"
+include_recipe 'ubic'
 
 # for development
 package 'vim'
@@ -20,22 +21,33 @@ dpkg_package "elasticsearch" do
   source "/tmp/elasticsearch.deb"
   action :install
 end
-service "elasticsearch" do
-    action :nothing
-end
 file "/etc/default/elasticsearch" do
     mode 0644
     content "JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64\n"
-    notifies :restart, "service[elasticsearch]"
+end
+service "elasticsearch" do
+    action :start
 end
 
 directory '/opt/log'
 
-# darkpan
+# orepan
 package 'make'
 package 'unzip'
 cpan_module 'OrePAN'
 directory '/opt/orepan'
+
+# pinto
+cpan_module 'Task::Pinto'
+directory '/opt/pinto'
+execute "pinto-init" do
+  cwd "/opt/pinto"
+  command "pinto init --root . --stack darkpan && touch /opt/pinto.init"
+  creates "/opt/pinto.init"
+end
+ubic_service 'pintod' do
+  action [:install, :start]
+end
 
 # cpan-api
 git "/opt/cpan-api" do
@@ -55,7 +67,6 @@ execute "cpan-api-deps" do
   command "cpanm --notest --installdeps . && bin/metacpan mapping --delete && touch /opt/cpan-api.installed"
   creates "/opt/cpan-api.installed"
 end
-include_recipe 'ubic'
 cpan_module 'Ubic::Service::Plack'
 cpan_module 'Starman'
 ubic_service 'cpan-api' do
@@ -85,6 +96,9 @@ end
 
 # nginx
 package 'nginx'
+file '/etc/nginx/sites-enabled/default' do
+  action :delete
+end
 service 'nginx'
 template "/etc/nginx/sites-enabled/darkpan" do
   source "nginx.conf.erb"

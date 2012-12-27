@@ -1,0 +1,13 @@
+# vim: ft=perl
+use strict;
+use warnings;
+
+use parent qw(Ubic::Service::SimpleDaemon);
+
+__PACKAGE__->new({
+    bin => 'pintod --root . --port 6000',
+    cwd => '/opt/pinto',
+    stdout => '/opt/log/pintod.log',
+    stderr => '/opt/log/pintod.err.log',
+    ubic_log => "/opt/log/pintod.ubic.log",
+});
