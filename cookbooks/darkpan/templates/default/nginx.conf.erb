@@ -17,7 +17,6 @@ server {
 
   location / {
     try_files $uri @proxy;
-    access_log off;
     expires max;
   }
 
