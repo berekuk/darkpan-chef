@@ -16,6 +16,7 @@ package 'openjdk-6-jre'
 remote_file "/tmp/elasticsearch.deb" do
   source "http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.1.deb"
   mode 0644
+  action :create_if_missing
 end
 dpkg_package "elasticsearch" do
   source "/tmp/elasticsearch.deb"
