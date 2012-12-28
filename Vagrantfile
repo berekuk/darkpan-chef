@@ -17,6 +17,9 @@ Vagrant::Config.run do |config|
   config.vm.forward_port 6000, 6000
   config.vm.forward_port 80, 8080
 
+  # metacpan and elasticsearch are *greedy*
+  config.vm.customize ["modifyvm", :id, "--memory", 1024]
+
   # Enable and configure the chef solo provisioner
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = 'cookbooks'
