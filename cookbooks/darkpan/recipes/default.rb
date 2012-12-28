@@ -73,6 +73,9 @@ cpan_module 'Starman'
 ubic_service 'cpan-api' do
   action [:install, :start]
 end
+cron "cpan-api-index-pinto" do
+    command "flock -n /opt/metacpan.index.lock -c '(/opt/cpan-api/bin/metacpan release /opt/pinto/darkpan/authors/id/ --cpan /opt/pinto/darkpan/authors/id/ --skip && /opt/cpan-api/bin/metacpan latest /opt/pinto/darkpan/ --cpan /opt/pinto/darkpan/) >>/opt/log/metacpan-index.log 2>>/opt/log/metacpan-index.err.log'"
+end
 
 # metacpan-web
 git "/opt/metacpan-web" do
