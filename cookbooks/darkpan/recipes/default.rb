@@ -78,6 +78,7 @@ cron "cpan-api-index-pinto" do
 end
 
 # metacpan-web
+package 'libcurl4-openssl-dev' # curl-config
 git "/opt/metacpan-web" do
   repository "https://github.com/CPAN-API/metacpan-web.git"
   reference "master"
