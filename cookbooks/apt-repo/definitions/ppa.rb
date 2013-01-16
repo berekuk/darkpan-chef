@@ -22,6 +22,8 @@ define :ppa,
   unless key_id
     # use the Launchpad API to get the correct archive signing key id
     require 'open-uri'
+    OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+    #http.verify_mode = OpenSSL::SSL::VERIFY_NONE  # sorry -- mmcleric
     base_url = 'https://api.launchpad.net/1.0'
     archive_url = "#{base_url}/~#{user}/+archive/#{archive}"
     key_fingerprint_url = "#{archive_url}/signing_key_fingerprint"
