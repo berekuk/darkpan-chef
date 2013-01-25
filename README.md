@@ -37,10 +37,27 @@ apt-get install git build-essential autoconf zlib1g-dev libssl-dev \
 gem install chef ruby-shadow --no-ri --no-rdoc
 ```
 
-2. Deploy the cookbooks:
+2. Fetch the cookbooks:
 
 ```
 git clone git://github.com/berekuk/darkpan-chef.git
+```
+
+3. Configure server name in `solo/solo.json`. It should be something like this:
+```
+{
+    "run_list": [ "recipe[darkpan::default]" ],
+    "server": "darkpan.your-company-name.com"
+}
+```
+
+4. Deploy the cookbooks:
+```
 cd darkpan-chef
 ./bin/solo-install.sh
 ```
+
+**TODO: simplify this instruction by using knife-solo**
+
+Note: pinto doesn't support `00whois.xml` file, so metacpan can't index authors info. This means that all `/author/LOGIN` pages won't work.
+To make them work, write the `/opt/pinto/darkpan/authors/id/authors/00whois.xml` file manually (or implement a script which generates it).

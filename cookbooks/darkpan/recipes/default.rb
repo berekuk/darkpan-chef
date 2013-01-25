@@ -76,6 +76,9 @@ end
 cron "cpan-api-index-pinto" do
     command "flock -n /opt/metacpan.index.lock -c '(/opt/cpan-api/bin/metacpan release /opt/pinto/darkpan/authors/id/ --cpan /opt/pinto/darkpan/authors/id/ --skip && /opt/cpan-api/bin/metacpan latest /opt/pinto/darkpan/ --cpan /opt/pinto/darkpan/) >>/opt/log/metacpan-index.log 2>>/opt/log/metacpan-index.err.log'"
 end
+cron "cpan-api-index-pinto-authors" do
+    command "if [ -e /opt/pinto/darkpan/authors/00whois.xml ]; then flock -n /opt/metacpan.index-authors.lock -c '/opt/cpan-api/bin/metacpan author --cpan /opt/pinto/darkpan >>/opt/log/metacpan-index-authors.log 2>>/opt/log/metacpan-index-authors.err.log'"
+end
 
 # metacpan-web
 package 'libcurl4-openssl-dev' # curl-config
