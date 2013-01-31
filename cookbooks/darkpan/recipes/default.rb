@@ -97,6 +97,9 @@ template "/opt/metacpan-web/metacpan_web_local.conf" do
   owner "root"
   group "root"
   mode 0644
+  variables({
+    :server => node.server
+  })
 end
 ubic_service 'metacpan-web' do
   action [:install, :start]
